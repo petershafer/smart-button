@@ -1,0 +1,30 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<polymer-element name="yo-greeting" attributes="activate">
+  <template>
+    <link rel="stylesheet" href="yo-greeting.css">
+    <h1>{{ greeting }}, {{ greeting }}!</h1>
+    <span>Update text to change the greeting.</span>
+    <input type="text" on-click="{{ hello }}" value="{{ greeting }}">
+  </template>
+  <script>
+    (function () {
+      'use strict';
+
+      Polymer({
+        greeting : '\'Allo',
+        activate : '',
+        hello: function(){
+          //alert(this.activate);
+          alert("what's it gonna be?");
+          (this.activate)();  // can't call an entirely external function
+                              // but if you're passing one component's function to another, that's a different story
+                              // take-away: promises can't just be embedded in plain old javascript, a framework is required
+                              // might mean this can't be done in a native way
+          console.log(this);
+        }
+      });
+
+    })();
+  </script>
+</polymer-element>

@@ -1,0 +1,35 @@
+angularjs/node_modules
+angularjs/dist
+angularjs/.tmp
+angularjs/.sass-cache
+angularjs/bower_components
+
+
+polymer/node_modules
+polymer/dist
+polymer/test/temp
+polymer/.sass-cache
+polymer/app/bower_components
+polymer/.tmp
+polymer/test/bower_components/
+
+
+### OSX ###
+react/.DS_Store
+
+### Windows ###
+# Windows image file caches
+react/Thumbs.db
+react/ehthumbs.db
+
+react/node_modules/
+react/src/bower_components
+react/dist
+
+
+x-tag/node_modules
+x-tag/dist
+x-tag/.tmp
+x-tag/.sass-cache
+x-tag/bower_components
+x-tag/app/bower_components

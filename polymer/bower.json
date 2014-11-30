@@ -1,0 +1,13 @@
+{
+  "name": "polymer-smartbutton",
+  "version": "0.0.0",
+  "dependencies": {
+    "core-elements": "Polymer/core-elements#^0.4.0",
+    "polymer": "Polymer/polymer#^0.4.0",
+    "bootstrap": "~3.2.0",
+    "q": "1.1.1"
+  },
+  "devDependencies": {
+    "polymer-test-tools": "Polymer/polymer-test-tools#^0.4.0"
+  }
+}

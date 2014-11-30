@@ -1,0 +1,66 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<polymer-element name="smart-button" attributes="activate label active-label complete-label failure-label allow-retry">
+  <template>
+    <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.css" />
+    <style>
+      .btn {
+        font-size: 21px;
+        padding: 14px 24px;
+      }
+    </style>
+    <a class="{{ classes }}" on-click="{{ trigger }}" disabled?="{{activated}}">{{ currentLabel }}</a>
+  </template>
+  <script>
+    (function () {
+      'use strict';
+      // Set up some common variables and functions 
+      var baseClasses = 'btn btn-lg smartbutton';
+      var successClass = ' btn-success';
+      var failClass = ' btn-danger';
+      // Let's let polymer do its thing
+      Polymer({
+        // Define our properties for the component
+        activate : '',
+        currentLabel : '',
+        classes: '',
+        error: false,
+        done: false,
+        activated: false,
+        ready: function(){
+          // Initialize the component
+          this.currentLabel = this.label;
+          this.classes = baseClasses + successClass;
+        },
+        trigger: function(){
+          // Define click behavior
+          // Cancel subsequent clicks after the user is already done.
+          if((this.error || this.done) && typeof this['allow-retry'] == "undefined"){
+            return;
+          }
+          this.activated = true;
+          this.done = false;
+          this.currentLabel = this["active-label"] || this.label;
+          this.classes = baseClasses + successClass;
+          // Trigger the task to complete.
+          var promise = (this.activate)();
+          // Handle the result of the task.
+          var self = this;
+          promise.then(function(){
+            self.currentLabel = self["complete-label"] || self.label;
+          })
+          .catch(function(){  // Error
+            self.classes = baseClasses + failClass;
+            self.error = true;
+            self.currentLabel = self['failure-label'] || self['label'];
+            self.done = false;
+          })
+          .done(function(){ // Clean up
+            self.activated = false;
+          });
+        }
+      });
+
+    })();
+  </script>
+</polymer-element>
