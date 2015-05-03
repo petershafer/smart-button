@@ -290,7 +290,6 @@ module.exports = function (grunt) {
     'autoprefixer',
     'uglify',
     'cssmin',
-    'vulcanize',
     'usemin',
     'minifyHtml'
   ]);
