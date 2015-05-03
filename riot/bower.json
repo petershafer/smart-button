@@ -1,0 +1,10 @@
+{
+  "name": "riotjs-smartbutton",
+  "version": "0.0.0",
+  "dependencies": {
+    "bootstrap": "~3.2.0",
+    "q": "1.1.1",
+    "riotjs": "~2.0.15"
+  },
+  "devDependencies": {}
+}

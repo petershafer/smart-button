@@ -33,3 +33,11 @@ x-tag/.tmp
 x-tag/.sass-cache
 x-tag/bower_components
 x-tag/app/bower_components
+
+
+riot/node_modules
+riot/dist
+riot/.tmp
+riot/.sass-cache
+riot/bower_components
+riot/app/bower_components
