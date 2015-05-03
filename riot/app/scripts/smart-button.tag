@@ -1,5 +1,5 @@
 <smart-button>
-    <a class={ className } onClick={ handleClick }>{ label }</a>
+    <a class={ className } disabled={ disabled } onClick={ handleClick }>{ label }</a>
     var dataStoreName = "_smartButton";
     var dataStore = window[dataStoreName] || [];
     var baseClasses = "btn btn-lg smartbutton";
