@@ -17,7 +17,4 @@
 	_smartButton["world"] = function(){
 		return fail(1000);
 	}
-	// _smartButton["hello"]().then(function(){
-	// 	alert("hello");
-	// });
 }());
