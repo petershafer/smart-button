@@ -17,17 +17,15 @@ angular
     'ngSanitize',
     'ngTouch'
   ])
-  .config(function ($routeProvider) {
-    $routeProvider
-      .when('/', {
-        templateUrl: 'views/main.html',
-        controller: 'MainCtrl'
-      })
-      .when('/about', {
-        templateUrl: 'views/about.html',
-        controller: 'AboutCtrl'
-      })
-      .otherwise({
-        redirectTo: '/'
-      });
+  .run(function($rootScope, $timeout, $q){
+    $rootScope.hello = function(){
+        return $timeout(function(){ }, 1000);
+    };
+    $rootScope.world = function(){
+        var defer = $q.defer();
+        $timeout(function(){
+            defer.reject();
+        }, 1000);
+        return defer.promise;
+    };
   });

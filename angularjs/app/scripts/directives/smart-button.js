@@ -24,11 +24,11 @@ angular.module('smartbuttonApp')
         label: '@',             // A string that’s used as the button’s label during an idle state.
         activate: '&'           // This should specify a function or method that performs an asynchronous task and returns a promise that will be fulfilled on completion.
       }, 
-      controller: function($scope, $element, $attrs, $injector){
+      controller: function($scope, $element, $attrs){
         // Additional scope variables
         // allowRetry: Determine if the user is allowed to retry the task.
         //      (Optional) Having this attribute present will allow the user to retry performing the task after it has completed or failed.
-        var retry = $attrs['allowRetry'] != undefined;
+        var retry = $attrs.allowRetry !== undefined;
         // Add template suporting variables to scope.
         $scope.activated = false;
         $scope.buttonLabel = $scope.label;
@@ -61,9 +61,9 @@ angular.module('smartbuttonApp')
             .finally(function(){ // clean up
                 $scope.activated = false;
             });
-        }
+        };
       },
-      link: function postLink(scope, element, attrs) {
+      link: function postLink() {
         // Unused
       }
     };
