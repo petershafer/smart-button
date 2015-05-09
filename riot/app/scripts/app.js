@@ -10,12 +10,28 @@
         setTimeout(deferred.reject, ms);
         return deferred.promise;
     }
-	window._smartButton = window._smartButton || [];
-	_smartButton["hello"] = function(){
-		return delay(1000);
-	}
-	_smartButton["world"] = function(){
-		return fail(1000);
-	}
-    riot.mount('smart-button');
+
+    var taskHandler = riot.observable()
+
+    taskHandler.on('hello', function(){
+        delay(1000).then(function(){
+            taskHandler.trigger('hello.success');
+        }).catch(function(){
+            taskHandler.trigger('hello.error');
+        }).done(function(){
+            taskHandler.trigger('hello.done');
+        });
+    });
+
+    taskHandler.on('world', function(){
+        fail(1000).then(function(){
+            taskHandler.trigger('world.success');
+        }).catch(function(){
+            taskHandler.trigger('world.error');
+        }).done(function(){
+            taskHandler.trigger('world.done');
+        });
+    });
+
+    riot.mount('smart-button', taskHandler);
 }());

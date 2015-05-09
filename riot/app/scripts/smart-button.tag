@@ -16,36 +16,36 @@
         if((this.error || this.done) && !this.retry){
             return;
         }
-        var task = dataStore[opts["activate"]] || null;
-        if(task == null){
-            return;
-        }else{
-            this.update({
-                label: opts["active-label"] || opts["label"],
-                disabled: true,
-                error: false
-            });
-            var self = this;
-            task().then(function(){ // Success
-                self.update({
-                    label: opts["complete-label"] || opts["label"],
-                    className: baseClasses + successClass,
-                    done: true
-                });
-            })
-            .catch(function(){  // Error
-                self.update({
-                    className: baseClasses + failClass,
-                    error: true,
-                    label: opts["failure-label"] || opts["label"],
-                    done: false
-                });
-            })
-            .done(function(){ // Clean up
-                self.update({
-                    disabled: false
-                });
-            });
-        }
+        var task = opts.trigger(opts.activate);//dataStore[opts["activate"]] || null;
+
+        this.update({
+            label: opts["active-label"] || opts["label"],
+            disabled: true,
+            error: false
+        });
+
+        var self = this;
+        opts.on(opts.activate + ".success", function(){
+            self.update({
+                label: opts["complete-label"] || opts["label"],
+                className: baseClasses + successClass,
+                done: true
+            });            
+        });
+
+        opts.on(opts.activate + ".error", function(){
+            self.update({
+                className: baseClasses + failClass,
+                error: true,
+                label: opts["failure-label"] || opts["label"],
+                done: false
+            });            
+        });
+        
+        opts.on(opts.activate + ".done", function(){
+            self.update({
+                disabled: false
+            });            
+        });
     }
 </smart-button>
