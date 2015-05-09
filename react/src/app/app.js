@@ -18,13 +18,25 @@ function fail(ms) {
     return deferred.promise;
 }
 
-function hello(){
-    return delay(1000);
-}
+document.getElementsByTagName("body")[0].addEventListener('hello', function(e){
+    delay(1000).then(function(){
+        e.target.dispatchEvent(new Event('hello.success'));
+    }).catch(function(){
+        e.target.dispatchEvent(new Event('hello.error'));
+    }).done(function(){
+        e.target.dispatchEvent(new Event('hello.done'));
+    });
+});
 
-function world(){
-    return fail(1000);
-}
+document.getElementsByTagName("body")[0].addEventListener('world', function(e){
+    fail(1000).then(function(){
+        e.target.dispatchEvent(new Event('world.success'));
+    }).catch(function(){
+        e.target.dispatchEvent(new Event('world.error'));
+    }).done(function(){
+        e.target.dispatchEvent(new Event('world.done'));
+    });
+});
 
 ExampleApp = React.createClass({
     render: function() {
@@ -32,14 +44,14 @@ ExampleApp = React.createClass({
         	/*jshint ignore:start */
             <div>
                 <p><SmartButton 
-                    activate={ hello }
+                    activate="hello"
                     label="Successful Button" 
                     active-label="Processing..." 
                     allow-retry 
                     complete-label="All Set!" 
                     failure-label="Oh No!" /></p>
                 <p><SmartButton 
-                    activate={ world } 
+                    activate="world"
                     label="Failing Button" 
                     active-label="Processing..." 
                     allow-retry 

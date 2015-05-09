@@ -18281,7 +18281,7 @@ var SmartButton = React.createClass({displayName: 'SmartButton',
         completeLabel: React.PropTypes.string,  // (Optional) A string that’s used as the button’s label after the asynchronous task has completed successfully.
         failureLabel: React.PropTypes.string,   // (Optional) A string that’s used as the button’s label after the asynchronous task has failed.
         label: React.PropTypes.string,          // A string that’s used as the button’s label during an idle state.
-        activate: React.PropTypes.func,         // This should specify a function or method that performs an asynchronous task and returns a promise that will be fulfilled on completion.
+        activate: React.PropTypes.string,       // This should specify a function or method that performs an asynchronous task and returns a promise that will be fulfilled on completion.
     },
     getInitialState: function() {
         // Define the initial state of the button
@@ -18306,18 +18306,7 @@ var SmartButton = React.createClass({displayName: 'SmartButton',
             buttonLabel: this.props['active-label'] || this.props['label']
         });
         // Trigger the task to complete.
-        var promise = (this.props.activate)();
-        // Handle the result of the task.
-        var self = this;
-        promise.then(function(){ // Success
-            self.finished();
-        })
-        .catch(function(){  // Error
-            self.problem();
-        })
-        .done(function(){ // Clean up
-            self.completed();
-        });
+        this.getDOMNode().dispatchEvent(new Event(this.props['activate'], {bubbles: true}));
     },
     finished: function(){
         // Set button to completed state.
@@ -18347,10 +18336,16 @@ var SmartButton = React.createClass({displayName: 'SmartButton',
         });
     },
     componentDidMount: function() {
-        // Adding to DOM
+        // Adding to DOM 
+        this.getDOMNode().addEventListener(this.props["activate"] + ".success", this.finished);
+        this.getDOMNode().addEventListener(this.props["activate"] + ".error", this.problem);
+        this.getDOMNode().addEventListener(this.props["activate"] + ".done", this.completed);
     },
     componentWillUnmount: function() {
         // Removing from DOM
+        this.getDOMNode().removeEventListener(this.props["activate"] + ".success", this.finished);
+        this.getDOMNode().removeEventListener(this.props["activate"] + ".error", this.problem);
+        this.getDOMNode().removeEventListener(this.props["activate"] + ".done", this.completed);
     },
     render: function() {
         // Render to Page
@@ -18390,13 +18385,25 @@ function fail(ms) {
     return deferred.promise;
 }
 
-function hello(){
-    return delay(1000);
-}
+document.getElementsByTagName("body")[0].addEventListener('hello', function(e){
+    delay(1000).then(function(){
+        e.target.dispatchEvent(new Event('hello.success'));
+    }).catch(function(){
+        e.target.dispatchEvent(new Event('hello.error'));
+    }).done(function(){
+        e.target.dispatchEvent(new Event('hello.done'));
+    });
+});
 
-function world(){
-    return fail(1000);
-}
+document.getElementsByTagName("body")[0].addEventListener('world', function(e){
+    fail(1000).then(function(){
+        e.target.dispatchEvent(new Event('world.success'));
+    }).catch(function(){
+        e.target.dispatchEvent(new Event('world.error'));
+    }).done(function(){
+        e.target.dispatchEvent(new Event('world.done'));
+    });
+});
 
 ExampleApp = React.createClass({displayName: 'ExampleApp',
     render: function() {
@@ -18404,14 +18411,14 @@ ExampleApp = React.createClass({displayName: 'ExampleApp',
         	/*jshint ignore:start */
             React.createElement("div", null, 
                 React.createElement("p", null, React.createElement(SmartButton, {
-                    activate: hello, 
+                    activate: "hello", 
                     label: "Successful Button", 
                     'active-label': "Processing...", 
                     'allow-retry': true, 
                     'complete-label': "All Set!", 
                     'failure-label': "Oh No!"})), 
                 React.createElement("p", null, React.createElement(SmartButton, {
-                    activate: world, 
+                    activate: "world", 
                     label: "Failing Button", 
                     'active-label': "Processing...", 
                     'allow-retry': true, 

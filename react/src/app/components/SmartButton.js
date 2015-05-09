@@ -8,7 +8,7 @@ var SmartButton = React.createClass({
         completeLabel: React.PropTypes.string,  // (Optional) A string that’s used as the button’s label after the asynchronous task has completed successfully.
         failureLabel: React.PropTypes.string,   // (Optional) A string that’s used as the button’s label after the asynchronous task has failed.
         label: React.PropTypes.string,          // A string that’s used as the button’s label during an idle state.
-        activate: React.PropTypes.func,         // This should specify a function or method that performs an asynchronous task and returns a promise that will be fulfilled on completion.
+        activate: React.PropTypes.string,       // This should specify a function or method that performs an asynchronous task and returns a promise that will be fulfilled on completion.
     },
     getInitialState: function() {
         // Define the initial state of the button
@@ -33,18 +33,7 @@ var SmartButton = React.createClass({
             buttonLabel: this.props['active-label'] || this.props['label']
         });
         // Trigger the task to complete.
-        var promise = (this.props.activate)();
-        // Handle the result of the task.
-        var self = this;
-        promise.then(function(){ // Success
-            self.finished();
-        })
-        .catch(function(){  // Error
-            self.problem();
-        })
-        .done(function(){ // Clean up
-            self.completed();
-        });
+        this.getDOMNode().dispatchEvent(new Event(this.props['activate'], {bubbles: true}));
     },
     finished: function(){
         // Set button to completed state.
@@ -74,10 +63,16 @@ var SmartButton = React.createClass({
         });
     },
     componentDidMount: function() {
-        // Adding to DOM
+        // Adding to DOM 
+        this.getDOMNode().addEventListener(this.props["activate"] + ".success", this.finished);
+        this.getDOMNode().addEventListener(this.props["activate"] + ".error", this.problem);
+        this.getDOMNode().addEventListener(this.props["activate"] + ".done", this.completed);
     },
     componentWillUnmount: function() {
         // Removing from DOM
+        this.getDOMNode().removeEventListener(this.props["activate"] + ".success", this.finished);
+        this.getDOMNode().removeEventListener(this.props["activate"] + ".error", this.problem);
+        this.getDOMNode().removeEventListener(this.props["activate"] + ".done", this.completed);
     },
     render: function() {
         // Render to Page

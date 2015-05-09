@@ -25,6 +25,7 @@ react/ehthumbs.db
 react/node_modules/
 react/src/bower_components
 react/dist
+react/src/scripts
 
 
 x-tag/node_modules
