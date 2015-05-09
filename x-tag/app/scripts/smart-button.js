@@ -18,6 +18,26 @@
                 a.innerHTML = this.getAttribute("label");
                 this.retry = this.getAttribute("allow-retry") !== null;
                 a.className = baseClasses + successClass;
+
+                var self = this;
+                var a = this.firstElementChild;
+                this.addEventListener(this.getAttribute("activate") + ".success", function(){
+                    a.innerHTML = self.getAttribute("complete-label") || self.getAttribute("label");
+                    a.className = baseClasses + successClass;
+                    self.done = true;
+                });
+
+                this.addEventListener(this.getAttribute("activate") + ".error", function(){
+                    a.className = baseClasses + failClass;
+                    self.error = true;
+                    a.innerHTML = self.getAttribute("failure-label") || self.getAttribute("label");
+                    self.done = false;          
+                });
+                
+                this.addEventListener(this.getAttribute("activate") + ".done", function(){
+                    a.removeAttribute("disabled");        
+                });
+
             },
 
             // Fires when an instance was inserted into the document
@@ -31,35 +51,11 @@
         },
         events: {
             'tap': function(){
-                if((this.error || this.done) && !this.retry){
-                    return;
-                }
+                xtag.fireEvent(this, this.getAttribute("activate"));
                 var a = this.firstElementChild;
-                var task = dataStore[this.getAttribute("activate")] || null;
-                if(task == null){
-                    return;
-                }else{
-                    a.innerHTML = this.getAttribute("active-label") || this.getAttribute("label");
-                    a.setAttribute("disabled", true);
-                    console.log(a);
-                    this.error = false;
-                    var self = this;
-                    task().then(function(){ // Success
-                        a.innerHTML = self.getAttribute("complete-label") || self.getAttribute("label");
-                        a.className = baseClasses + successClass;
-                        self.done = true;
-                    })
-                    .catch(function(){  // Error
-                        a.className = baseClasses + failClass;
-                        self.error = true;
-                        a.innerHTML = self.getAttribute("failure-label") || self.getAttribute("label");
-                        self.done = false;
-                    })
-                    .done(function(){ // Clean up
-                        a.removeAttribute("disabled");
-                        console.log(a);
-                    });
-                }
+                a.innerHTML = this.getAttribute("active-label") || this.getAttribute("label");
+                a.setAttribute("disabled", true);
+                this.error = false;
             }
         },
         accessors: {},
