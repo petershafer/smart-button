@@ -22,7 +22,7 @@ angular.module('smartbuttonApp')
         completeLabel: '@',     // (Optional) A string that’s used as the button’s label after the asynchronous task has completed successfully.
         failureLabel: '@',      // (Optional) A string that’s used as the button’s label after the asynchronous task has failed.
         label: '@',             // A string that’s used as the button’s label during an idle state.
-        activate: '&'           // This should specify a function or method that performs an asynchronous task and returns a promise that will be fulfilled on completion.
+        activate: '@'           // This should specify a function or method that performs an asynchronous task and returns a promise that will be fulfilled on completion.
       }, 
       controller: function($scope, $element, $attrs){
         // Additional scope variables
@@ -47,18 +47,19 @@ angular.module('smartbuttonApp')
             $scope.buttonLabel = $scope.activeLabel || $scope.label;
             $scope.error = false;
             // Trigger the task to complete.
-            result = $scope.activate();
+            result = $scope.$emit($attrs.activate);
             // Handle the result of the task.
-            result.then(function(){ // success
+
+            $scope.$on($attrs.activate + '.success', function(){
                 $scope.buttonLabel = $scope.completeLabel || $scope.label;
                 done = true;
-            })
-            .catch(function(){  // error 
+            });
+            $scope.$on($attrs.activate + '.error', function(){
                 $scope.buttonLabel = $scope.failureLabel || $scope.label;
                 $scope.error = true;
                 done = false;
-            })
-            .finally(function(){ // clean up
+            });
+            $scope.$on($attrs.activate + '.done', function(){
                 $scope.activated = false;
             });
         };

@@ -18,14 +18,32 @@ angular
     'ngTouch'
   ])
   .run(function($rootScope, $timeout, $q){
-    $rootScope.hello = function(){
+    var hello = function(){
         return $timeout(function(){ }, 1000);
     };
-    $rootScope.world = function(){
+    var world = function(){
         var defer = $q.defer();
         $timeout(function(){
             defer.reject();
         }, 1000);
         return defer.promise;
     };
+    $rootScope.$on('hello', function(){
+      hello().then(function(){
+        $rootScope.$broadcast('hello.success');
+      }).catch(function(){
+        $rootScope.$broadcast('hello.error');
+      }).finally(function(){
+        $rootScope.$broadcast('hello.done');
+      });
+    });
+    $rootScope.$on('world', function(){
+      world().then(function(){
+        $rootScope.$broadcast('world.success');
+      }).catch(function(){
+        $rootScope.$broadcast('world.error');
+      }).finally(function(){
+        $rootScope.$broadcast('world.done');
+      });
+    });
   });
