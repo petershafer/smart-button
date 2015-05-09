@@ -27,10 +27,31 @@
         error: false,
         done: false,
         activated: false,
+        endSuccess: function(){
+          this.currentLabel = this["complete-label"] || this.label;
+        },
+        endError: function(){
+          this.classes = baseClasses + failClass;
+          this.error = true;
+          this.currentLabel = this['failure-label'] || this['label'];
+          this.done = false;
+        },
+        endDone: function(){
+          this.activated = false;
+        },
         ready: function(){
           // Initialize the component
           this.currentLabel = this.label;
           this.classes = baseClasses + successClass;
+          this.addEventListener(this.activate + '.success', this.endSuccess);
+          this.addEventListener(this.activate + '.error', this.endError);
+          this.addEventListener(this.activate + '.done', this.endDone);
+        },
+        detached: function(){
+          // Handle destruction of the component
+          this.removeEventListener(this.activate + '.success', this.endSuccess);
+          this.removeEventListener(this.activate + '.error', this.endError);
+          this.removeEventListener(this.activate + '.done', this.endDone);
         },
         trigger: function(){
           // Define click behavior
@@ -43,21 +64,9 @@
           this.currentLabel = this["active-label"] || this.label;
           this.classes = baseClasses + successClass;
           // Trigger the task to complete.
-          var promise = (this.activate)();
+          this.fire(this.activate);
           // Handle the result of the task.
           var self = this;
-          promise.then(function(){
-            self.currentLabel = self["complete-label"] || self.label;
-          })
-          .catch(function(){  // Error
-            self.classes = baseClasses + failClass;
-            self.error = true;
-            self.currentLabel = self['failure-label'] || self['label'];
-            self.done = false;
-          })
-          .done(function(){ // Clean up
-            self.activated = false;
-          });
         }
       });
 

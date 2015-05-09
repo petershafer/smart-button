@@ -43,7 +43,22 @@
               <img src="images/yeoman.png" alt="I'm Yeoman"><br>
               Always a pleasure scaffolding your apps.
             </p>
-            <my-app />
+            <div>
+              <p><smart-button 
+                activate="hello"
+                label="Successful Button" 
+                active-label="Processing..." 
+                allow-retry 
+                complete-label="All Set!" 
+                failure-label="Oh No!" /></p>
+              <p><smart-button 
+                activate="world" 
+                label="Failing Button" 
+                active-label="Processing..." 
+                allow-retry 
+                complete-label="All Set!" 
+                failure-label="Oh No! Try Again." /></p>
+            </div>
           </div>
 
           <div class="row marketing">
